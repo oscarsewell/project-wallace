@@ -6,7 +6,7 @@ BASE_URL = "https://www.rottentomatoes.com/m/"
 
 def get_movie_url(movie_name: str) -> str:
     """Converts a movie name into its corresponding Rotten Tomatoes URL."""
-    formatted_name = movie_name.lower().replace(" ", "_")
+    formatted_name = movie_name.lower().replace(" ", "_").replace(":", "").replace("'", "")
     return f"{BASE_URL}{formatted_name}"
 
 
@@ -25,23 +25,43 @@ def get_movie_title(soup: BeautifulSoup) -> str:
 
 def get_movie_scores(soup: BeautifulSoup) -> dict:
     """Extracts the critics and audience scores from the movie's Rotten Tomatoes page."""
-    ratings = {}
+    scores = {}
 
     critics_score = soup.find("rt-text", slot="critics-score")
     if critics_score:
-        ratings["critics_score"] = critics_score.text.strip()
+        scores["critics_score"] = critics_score.text.strip()
 
     audience_score = soup.find("rt-text", slot="audience-score")
     if audience_score:
-        ratings["audience_score"] = audience_score.text.strip()
+        scores["audience_score"] = audience_score.text.strip()
 
-    return ratings
+    return scores
 
 
 def get_movie_genres(soup: BeautifulSoup) -> list:
     """Extracts the genres of the movie from the page's HTML."""
     genre_elements = soup.find_all("rt-text", slot="metadata-genre")
     return [genre.text.strip() for genre in genre_elements]
+
+
+def get_movie_director(soup: BeautifulSoup) -> str:
+    """Extracts the director of the movie from the page's HTML."""
+    ...
+
+
+def get_movie_cast(soup: BeautifulSoup) -> list:
+    """Extracts the cast of the movie from the page's HTML."""
+    ...
+
+
+def get_movie_release_date(soup: BeautifulSoup) -> str:
+    """Extracts the release date of the movie from the page's HTML."""
+    ...
+
+
+def get_movie_runtime(soup: BeautifulSoup) -> str:
+    """Extracts the runtime of the movie from the page's HTML."""
+    ...
 
 
 if __name__ == "__main__":
@@ -54,3 +74,6 @@ if __name__ == "__main__":
     print(f"Critics Score: {scores.get('critics_score', 'N/A')}")
     print(f"Audience Score: {scores.get('audience_score', 'N/A')}")
     print(f"Genres: {', '.join(genres)}")
+
+    with open("movie_page.html", "w", encoding="utf-8") as file:
+        file.write(str(movie_page))
