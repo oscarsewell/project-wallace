@@ -76,17 +76,3 @@ def get_movie_release_date(soup: BeautifulSoup) -> str | None:
 def get_movie_runtime(soup: BeautifulSoup) -> str | None:
     """Extracts the runtime of the movie from the page's HTML."""
     ...
-
-
-if __name__ == "__main__":
-    movie_name = "Mortal Kombat II"
-    movie_page = get_movie_page(movie_name)
-    title = get_movie_title(movie_page)
-    critics_score = get_movie_critics_score(movie_page)
-    audience_score = get_movie_audience_score(movie_page)
-    scores = {"critics_score": critics_score, "audience_score": audience_score}
-    genres = get_movie_genres(movie_page)
-    print(f"Title: {title}")
-    print(f"Critics Score: {scores.get('critics_score', 'N/A')}")
-    print(f"Audience Score: {scores.get('audience_score', 'N/A')}")
-    print(f"Genres: {', '.join(genres)}")
