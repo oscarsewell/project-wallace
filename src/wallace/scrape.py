@@ -29,7 +29,7 @@ def get_movie_page(movie_name: str) -> BeautifulSoup:
 def get_movie_title(soup: BeautifulSoup) -> str:
     """Extracts the movie title from the page's HTML."""
     title = soup.find("rt-text", slot="title", context="heading")
-    if not title:
+    if not title or not title.text.strip():
         raise MovieScrapeError("Movie title not found on the page.")
     return title.text.strip()
 
@@ -37,7 +37,7 @@ def get_movie_title(soup: BeautifulSoup) -> str:
 def get_movie_audience_score(soup: BeautifulSoup) -> str:
     """Extracts the audience score from the page's HTML."""
     audience_score = soup.find("rt-text", slot="audience-score")
-    if not audience_score:
+    if not audience_score or not audience_score.text.strip():
         raise MovieScrapeError("Audience score not found on the page.")
     return audience_score.text.strip()
 
@@ -45,7 +45,7 @@ def get_movie_audience_score(soup: BeautifulSoup) -> str:
 def get_movie_critics_score(soup: BeautifulSoup) -> str:
     """Extracts the critics score from the page's HTML."""
     critics_score = soup.find("rt-text", slot="critics-score")
-    if not critics_score:
+    if not critics_score or not critics_score.text.strip():
         raise MovieScrapeError("Critics score not found on the page.")
     return critics_score.text.strip()
 
@@ -53,7 +53,7 @@ def get_movie_critics_score(soup: BeautifulSoup) -> str:
 def get_movie_genres(soup: BeautifulSoup) -> list:
     """Extracts the genres of the movie from the page's HTML."""
     genre_elements = soup.find_all("rt-text", slot="metadata-genre")
-    if not genre_elements:
+    if not genre_elements or not any(genre.text.strip() for genre in genre_elements):
         raise MovieScrapeError("Genres not found on the page.")
     return [genre.text.strip() for genre in genre_elements]
 
