@@ -7,7 +7,10 @@ authors = [
     { name = "Danny Bozbay", email = "107803920+dbozbay@users.noreply.github.com" }
 ]
 requires-python = ">=3.14"
-dependencies = []
+dependencies = [
+    "bs4>=0.0.2",
+    "requests>=2.33.1",
+]
 
 [project.scripts]
 project-wallace = "wallace:main"
