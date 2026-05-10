@@ -4,6 +4,12 @@ from bs4 import BeautifulSoup
 BASE_URL = "https://www.rottentomatoes.com/m/"
 
 
+class MovieScrapeError(Exception):
+    """Custom exception for movie scraping errors."""
+
+    pass
+
+
 def get_movie_url(movie_name: str) -> str:
     """Converts a movie name into its corresponding Rotten Tomatoes URL."""
     formatted_name = (
@@ -22,46 +28,52 @@ def get_movie_page(movie_name: str) -> BeautifulSoup:
 
 def get_movie_title(soup: BeautifulSoup) -> str:
     """Extracts the movie title from the page's HTML."""
-    return soup.find("rt-text", slot="title", context="heading").text.strip()
+    title = soup.find("rt-text", slot="title", context="heading")
+    if not title:
+        raise MovieScrapeError("Movie title not found on the page.")
+    return title.text.strip()
 
 
-def get_movie_scores(soup: BeautifulSoup) -> dict:
-    """Extracts the critics and audience scores from the movie's Rotten Tomatoes page."""
-    scores = {}
-
-    critics_score = soup.find("rt-text", slot="critics-score")
-    if critics_score:
-        scores["critics_score"] = critics_score.text.strip()
-
+def get_movie_audience_score(soup: BeautifulSoup) -> str:
+    """Extracts the audience score from the page's HTML."""
     audience_score = soup.find("rt-text", slot="audience-score")
-    if audience_score:
-        scores["audience_score"] = audience_score.text.strip()
+    if not audience_score:
+        raise MovieScrapeError("Audience score not found on the page.")
+    return audience_score.text.strip()
 
-    return scores
+
+def get_movie_critics_score(soup: BeautifulSoup) -> str:
+    """Extracts the critics score from the page's HTML."""
+    critics_score = soup.find("rt-text", slot="critics-score")
+    if not critics_score:
+        raise MovieScrapeError("Critics score not found on the page.")
+    return critics_score.text.strip()
 
 
 def get_movie_genres(soup: BeautifulSoup) -> list:
     """Extracts the genres of the movie from the page's HTML."""
     genre_elements = soup.find_all("rt-text", slot="metadata-genre")
+    if not genre_elements:
+        raise MovieScrapeError("Genres not found on the page.")
     return [genre.text.strip() for genre in genre_elements]
 
 
-def get_movie_director(soup: BeautifulSoup) -> str:
+def get_movie_director(soup: BeautifulSoup) -> str | None:
     """Extracts the director of the movie from the page's HTML."""
     ...
 
 
-def get_movie_cast(soup: BeautifulSoup) -> list:
+def get_movie_cast(soup: BeautifulSoup) -> list | None:
     """Extracts the cast of the movie from the page's HTML."""
     ...
 
 
-def get_movie_release_date(soup: BeautifulSoup) -> str:
+def get_movie_release_date(soup: BeautifulSoup) -> str | None:
     """Extracts the release date of the movie from the page's HTML."""
     ...
 
 
-def get_movie_runtime(soup: BeautifulSoup) -> str:
+def get_movie_runtime(soup: BeautifulSoup) -> str | None:
     """Extracts the runtime of the movie from the page's HTML."""
     ...
 
@@ -70,7 +82,9 @@ if __name__ == "__main__":
     movie_name = "Mortal Kombat II"
     movie_page = get_movie_page(movie_name)
     title = get_movie_title(movie_page)
-    scores = get_movie_scores(movie_page)
+    critics_score = get_movie_critics_score(movie_page)
+    audience_score = get_movie_audience_score(movie_page)
+    scores = {"critics_score": critics_score, "audience_score": audience_score}
     genres = get_movie_genres(movie_page)
     print(f"Title: {title}")
     print(f"Critics Score: {scores.get('critics_score', 'N/A')}")
