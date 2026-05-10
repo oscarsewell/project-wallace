@@ -6,7 +6,9 @@ BASE_URL = "https://www.rottentomatoes.com/m/"
 
 def get_movie_url(movie_name: str) -> str:
     """Converts a movie name into its corresponding Rotten Tomatoes URL."""
-    formatted_name = movie_name.lower().replace(" ", "_").replace(":", "").replace("'", "")
+    formatted_name = (
+        movie_name.lower().replace(" ", "_").replace(":", "").replace("'", "")
+    )
     return f"{BASE_URL}{formatted_name}"
 
 
