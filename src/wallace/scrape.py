@@ -74,6 +74,3 @@ if __name__ == "__main__":
     print(f"Critics Score: {scores.get('critics_score', 'N/A')}")
     print(f"Audience Score: {scores.get('audience_score', 'N/A')}")
     print(f"Genres: {', '.join(genres)}")
-
-    with open("movie_page.html", "w", encoding="utf-8") as file:
-        file.write(str(movie_page))
